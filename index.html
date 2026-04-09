@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhotoContest CDF — Concurso Fotográfico</title>
+  <link rel="stylesheet" href="main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ══════════ NAVBAR ══════════ -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">◈</span>
+      <span class="brand-name">PhotoCDF</span>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" class="nav-link active">Inicio</a>
+      <a href="gallery.html" class="nav-link">Galería</a>
+      <a href="#bases" class="nav-link">Bases</a>
+    </div>
+    <div class="nav-actions" id="navActions">
+      <button class="btn-ghost" onclick="showModal('loginModal')">Entrar</button>
+      <button class="btn-primary" onclick="showModal('registerModal')">Participar</button>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- ══════════ HERO ══════════ -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-carousel" id="heroCarousel">
+        <!-- JS llenará esto con fotos de participantes -->
+        <div class="carousel-placeholder">
+          <div class="ph-grid">
+            <div class="ph-cell ph-1"></div>
+            <div class="ph-cell ph-2"></div>
+            <div class="ph-cell ph-3"></div>
+            <div class="ph-cell ph-4"></div>
+            <div class="ph-cell ph-5"></div>
+            <div class="ph-cell ph-6"></div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-overlay"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-tag">
+        <span class="tag-dot"></span>
+        Convocatoria abierta 2025
+      </div>
+      <h1 class="hero-title">
+        <span class="title-line line-1">CAPTURA</span>
+        <span class="title-line line-2">TU MEJOR</span>
+        <span class="title-line line-3 accent">MOMENTO</span>
+      </h1>
+      <p class="hero-subtitle">
+        El concurso fotográfico oficial del <strong>Club de Fotografía</strong>.<br/>
+        Muestra tu visión del mundo. Gana premios increíbles.
+      </p>
+      <div class="hero-cta">
+        <button class="btn-hero-primary" onclick="showModal('registerModal')">
+          Inscribirme ahora
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <a href="#bases" class="btn-hero-ghost">Ver bases del concurso</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num" id="statParticipants">0</span><span class="stat-label">Participantes</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-num" id="statPhotos">0</span><span class="stat-label">Fotos subidas</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-num">S/.500</span><span class="stat-label">Premio mayor</span></div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <span>Desliza</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ══════════ PREMIOS ══════════ -->
+  <section class="prizes" id="premios">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">Lo que está en juego</p>
+        <h2 class="section-title">Premios del Concurso</h2>
+      </div>
+      <div class="prizes-grid">
+        <div class="prize-card silver">
+          <div class="prize-pos">2°</div>
+          <div class="prize-icon">🥈</div>
+          <div class="prize-amount">S/. 200</div>
+          <div class="prize-label">Segundo lugar</div>
+          <ul class="prize-perks">
+            <li>Vale de dinero en efectivo</li>
+            <li>Diploma de reconocimiento</li>
+            <li>Publicación en redes sociales</li>
+          </ul>
+        </div>
+        <div class="prize-card gold featured">
+          <div class="prize-ribbon">GRAND PRIZE</div>
+          <div class="prize-pos">1°</div>
+          <div class="prize-icon">🏆</div>
+          <div class="prize-amount">S/. 500</div>
+          <div class="prize-label">Primer lugar</div>
+          <ul class="prize-perks">
+            <li>Vale de dinero en efectivo</li>
+            <li>Trofeo y diploma oficial</li>
+            <li>Exhibición en galería CDF</li>
+            <li>Publicación en medios</li>
+          </ul>
+        </div>
+        <div class="prize-card bronze">
+          <div class="prize-pos">3°</div>
+          <div class="prize-icon">🥉</div>
+          <div class="prize-amount">S/. 100</div>
+          <div class="prize-label">Tercer lugar</div>
+          <ul class="prize-perks">
+            <li>Vale de dinero en efectivo</li>
+            <li>Diploma de reconocimiento</li>
+            <li>Publicación en redes sociales</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ BASES DEL CONCURSO ══════════ -->
+  <section class="bases" id="bases">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">Reglamento oficial</p>
+        <h2 class="section-title">Bases del Concurso</h2>
+      </div>
+
+      <div class="bases-grid">
+
+        <div class="base-card">
+          <div class="base-num">01</div>
+          <h3 class="base-title">Temática y Requisito Principal</h3>
+          <p>Todas las fotografías participantes <strong>deben haber sido tomadas dentro de las instalaciones del Club de Fotografía (CDF)</strong>. El jurado verificará la autenticidad y el lugar de captura de cada imagen presentada.</p>
+        </div>
+
+        <div class="base-card">
+          <div class="base-num">02</div>
+          <h3 class="base-title">Participantes</h3>
+          <p>Pueden participar todas las personas mayores de 15 años que se registren en la plataforma con alias, correo electrónico, número de teléfono y contraseña. Cada participante puede subir hasta <strong>3 fotografías</strong> durante el concurso.</p>
+        </div>
+
+        <div class="base-card">
+          <div class="base-num">03</div>
+          <h3 class="base-title">Formato de Fotografías</h3>
+          <p>Se aceptan imágenes en formato <strong>JPG, PNG y WEBP</strong>. La resolución mínima es 1200×800 píxeles. El tamaño máximo por archivo es 10 MB. No se permiten montajes digitales ni manipulación excesiva.</p>
+        </div>
+
+        <div class="base-card">
+          <div class="base-num">04</div>
+          <h3 class="base-title">Período de Participación</h3>
+          <p>Las inscripciones y subida de fotos están abiertas desde el <strong>1 de Julio hasta el 31 de Agosto 2025</strong>. Los resultados se anunciarán el 15 de Septiembre de 2025 en esta plataforma y en las redes sociales del CDF.</p>
+        </div>
+
+        <div class="base-card">
+          <div class="base-num">05</div>
+          <h3 class="base-title">Criterios de Evaluación</h3>
+          <p>El jurado evaluará: Composición y técnica fotográfica (40%), Creatividad y originalidad (30%), Relevancia temática dentro del CDF (20%) y Impacto visual (10%).</p>
+        </div>
+
+        <div class="base-card">
+          <div class="base-num">06</div>
+          <h3 class="base-title">Derechos de Imagen</h3>
+          <p>Los participantes conservan los derechos de autoría de sus obras. Al participar, autorizan al CDF a usar las imágenes con fines de difusión del concurso en medios digitales e impresos, con crédito al autor.</p>
+        </div>
+
+        <div class="base-card">
+          <div class="base-num">07</div>
+          <h3 class="base-title">Descalificación</h3>
+          <p>Serán descalificadas fotos con contenido inapropiado, que no cumplan el requisito de haber sido tomadas en CDF, que hayan sido manipuladas de forma excesiva, o que pertenezcan a otra persona.</p>
+        </div>
+
+        <div class="base-card">
+          <div class="base-num">08</div>
+          <h3 class="base-title">Decisión del Jurado</h3>
+          <p>La decisión del jurado es <strong>inapelable y definitiva</strong>. El jurado está compuesto por 3 fotógrafos profesionales independientes designados por la dirección del CDF.</p>
+        </div>
+
+      </div>
+
+      <div class="bases-cta">
+        <p>¿Listo para participar?</p>
+        <button class="btn-primary btn-lg" onclick="showModal('registerModal')">Inscribirme ahora</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ FOOTER ══════════ -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="brand-icon">◈</span>
+        <span class="brand-name">PhotoCDF</span>
+        <p>Club de Fotografía — Concurso Oficial 2025</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Inicio</a>
+        <a href="gallery.html">Galería</a>
+        <a href="#bases">Bases</a>
+        <a href="#" onclick="showModal('loginModal')">Acceder</a>
+      </div>
+      <div class="footer-copy">
+        © 2025 Club de Fotografía CDF. Todos los derechos reservados.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════ MODAL LOGIN ══════════ -->
+  <div class="modal-overlay" id="loginModal" onclick="closeModalOutside(event,'loginModal')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+      <div class="modal-header">
+        <div class="modal-icon">◈</div>
+        <h2>Iniciar sesión</h2>
+        <p>Accede a tu cuenta para gestionar tus fotos</p>
+      </div>
+      <form class="modal-form" id="loginForm" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="loginEmail" placeholder="tu@correo.com" required />
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required />
+        </div>
+        <div id="loginError" class="form-error hidden"></div>
+        <button type="submit" class="btn-primary btn-full" id="loginBtn">
+          <span class="btn-text">Entrar</span>
+          <span class="btn-loader hidden">Cargando...</span>
+        </button>
+        <p class="form-switch">¿No tienes cuenta? <a href="#" onclick="switchModal('loginModal','registerModal')">Regístrate aquí</a></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ══════════ MODAL REGISTRO ══════════ -->
+  <div class="modal-overlay" id="registerModal" onclick="closeModalOutside(event,'registerModal')">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+      <div class="modal-header">
+        <div class="modal-icon">◈</div>
+        <h2>Crear cuenta</h2>
+        <p>Únete al concurso fotográfico del CDF</p>
+      </div>
+      <form class="modal-form" id="registerForm" onsubmit="handleRegister(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Alias / Apodo</label>
+            <input type="text" id="regAlias" placeholder="@fotógrafo_pro" required minlength="3" />
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" id="regPhone" placeholder="+51 999 999 999" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="regEmail" placeholder="tu@correo.com" required />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="regPassword" placeholder="••••••••" required minlength="6" />
+          </div>
+          <div class="form-group">
+            <label>Confirmar</label>
+            <input type="password" id="regPassword2" placeholder="••••••••" required />
+          </div>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="regTerms" required />
+          <label for="regTerms">Acepto las <a href="#bases">bases del concurso</a> y autorizo el uso de mis fotos con fines de difusión</label>
+        </div>
+        <div id="registerError" class="form-error hidden"></div>
+        <button type="submit" class="btn-primary btn-full" id="registerBtn">
+          <span class="btn-text">Crear cuenta y participar</span>
+          <span class="btn-loader hidden">Registrando...</span>
+        </button>
+        <p class="form-switch">¿Ya tienes cuenta? <a href="#" onclick="switchModal('registerModal','loginModal')">Inicia sesión</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="auth.js"></script>
+  <script type="module" src="carousel.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
