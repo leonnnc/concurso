@@ -85,12 +85,12 @@ async function updateQuotaDisplay(uid) {
     const q = query(collection(db, "photos"), where("uid", "==", uid));
     const snap = await getDocs(q);
     const count = snap.size;
-    const remaining = 15 - count;
+    const remaining = 10 - count;
     const quotaEl = document.getElementById("userQuota");
     if (quotaEl) {
       quotaEl.textContent = remaining > 0
         ? `Puedes subir ${remaining} foto${remaining !== 1 ? "s" : ""} más`
-        : "Alcanzaste el límite de 15 fotos";
+        : "Alcanzaste el límite de 10 fotos";
     }
   } catch (e) {
     console.warn("Quota check error:", e);

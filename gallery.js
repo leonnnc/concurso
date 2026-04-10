@@ -226,14 +226,14 @@ window.showUploadPanel = function() {
 
   // Mostrar aviso si se acerca al límite
   const count = allPhotos.length;
-  const remaining = 15 - count;
+  const remaining = 10 - count;
   const warningEl = document.getElementById("uploadQuotaWarning");
   if (warningEl) {
     if (remaining <= 3 && remaining > 0) {
-      warningEl.textContent = `⚠️ Te quedan ${remaining} foto${remaining !== 1 ? "s" : ""} disponibles de 15.`;
+      warningEl.textContent = `⚠️ Te quedan ${remaining} foto${remaining !== 1 ? "s" : ""} disponibles de 10.`;
       warningEl.classList.remove("hidden");
     } else if (remaining === 0) {
-      warningEl.textContent = "🚫 Alcanzaste el límite de 15 fotografías.";
+      warningEl.textContent = "🚫 Alcanzaste el límite de 10 fotografías.";
       warningEl.classList.remove("hidden");
     } else {
       warningEl.classList.add("hidden");
@@ -274,9 +274,9 @@ function processFile(file) {
     showUploadError("Solo se aceptan archivos de imagen.");
     return;
   }
-  // Límite de 20MB
-  if (file.size > 20 * 1024 * 1024) {
-    showUploadError("El archivo supera el límite de 20 MB.");
+  // Límite de 6MB
+  if (file.size > 6 * 1024 * 1024) {
+    showUploadError("El archivo supera el límite de 6 MB.");
     return;
   }
   selectedFile = file;
@@ -317,8 +317,8 @@ window.handleUpload = async function() {
   // Verificar cuota
   const countQ = query(collection(db, "photos"), where("uid", "==", user.uid));
   const countSnap = await getDocs(countQ);
-  if (countSnap.size >= 15) {
-    showUploadError("Alcanzaste el límite de 15 fotografías.");
+  if (countSnap.size >= 10) {
+    showUploadError("Alcanzaste el límite de 10 fotografías.");
     return;
   }
 
@@ -371,8 +371,8 @@ window.handleUpload = async function() {
         pText.textContent = "¡Foto publicada!";
 
         const newCount = allPhotos.length + 1;
-        if (newCount >= 13) {
-          showToast(`¡Foto publicada! Te quedan ${15 - newCount} foto${15 - newCount !== 1 ? "s" : ""} disponibles.`, "success");
+        if (newCount >= 8) {
+          showToast(`¡Foto publicada! Te quedan ${10 - newCount} foto${10 - newCount !== 1 ? "s" : ""} disponibles.`, "success");
         } else {
           showToast("¡Foto publicada con éxito!", "success");
         }

@@ -42,7 +42,7 @@
     <div class="gallery-hero-content">
       <p class="section-tag">Concurso 2025</p>
       <h1>Galería de <span class="accent">Participantes</span></h1>
-      <p class="gallery-hero-sub">Explora y gestiona tus fotografías del concurso. Puedes subir hasta <strong>15 fotos</strong>. Fecha límite: <strong>31 de Agosto 2025</strong>.</p>
+      <p class="gallery-hero-sub">Explora y gestiona tus fotografías del concurso. Puedes subir hasta <strong>10 fotos</strong>. Fecha límite: <strong>31 de Agosto 2025</strong>.</p>
 
       <!-- Estado: usuario NO autenticado -->
       <div id="guestBanner" class="guest-banner">
@@ -57,7 +57,7 @@
           <div class="user-avatar" id="userAvatar">F</div>
           <div>
             <p class="user-welcome">Hola, <strong id="userAlias">fotógrafo</strong></p>
-            <p class="user-quota" id="userQuota">Puedes subir hasta 15 fotos</p>
+            <p class="user-quota" id="userQuota">Puedes subir hasta 10 fotos</p>
           </div>
         </div>
         <button class="btn-primary" onclick="showUploadPanel()">
@@ -93,10 +93,10 @@
           <p style="font-size:11px;color:var(--gold);font-family:var(--font-mono);letter-spacing:1px;margin-bottom:4px;">CONDICIONES</p>
           <p style="font-size:12px;color:var(--text-2);">✓ Formatos: JPG, PNG, WEBP, HEIC, BMP y más</p>
           <p style="font-size:12px;color:var(--text-2);">✓ Tamaño mínimo: 800×600 px</p>
-          <p style="font-size:12px;color:var(--text-2);">✓ Tamaño máximo: 20 MB</p>
+          <p style="font-size:12px;color:var(--text-2);">✓ Tamaño máximo: 6 MB</p>
           <p style="font-size:12px;color:var(--text-2);">✓ Foto tomada dentro del CDF</p>
           <p style="font-size:12px;color:var(--text-2);">✓ Sin montajes ni manipulación excesiva</p>
-          <p style="font-size:12px;color:var(--text-2);">✓ Máximo 15 fotos por participante</p>
+          <p style="font-size:12px;color:var(--text-2);">✓ Máximo 10 fotos por participante</p>
         </div>
         <input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileSelect(event)" />
       </div>
@@ -138,7 +138,7 @@
       <button class="filter-tab" onclick="filterGallery('recent', this)">Recientes</button>
     </div>
     <div class="gallery-count">
-      <span id="photoCount">0</span> / 15 fotografías
+      <span id="photoCount">0</span> / 10 fotografías
     </div>
   </div>
 
