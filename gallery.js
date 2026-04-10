@@ -38,10 +38,26 @@ setTimeout(() => {
   }
 }, 1500);
 
-// ── CARGA FOTOS ──
+// ── CARGA FOTOS (solo del usuario logueado) ──
 async function loadGallery() {
+  const uid = window.__currentUser?.uid;
   try {
-    const q = query(collection(db, "photos"), orderBy("createdAt", "desc"), limit(PAGE_SIZE));
+    let q;
+    if (uid) {
+      q = query(
+        collection(db, "photos"),
+        where("uid", "==", uid),
+        orderBy("createdAt", "desc"),
+        limit(PAGE_SIZE)
+      );
+    } else {
+      // Sin sesión: galería vacía, solo mostrar mensaje
+      document.getElementById("galleryGrid").innerHTML = "";
+      document.getElementById("galleryEmpty").classList.remove("hidden");
+      document.getElementById("loadMoreBtn").style.display = "none";
+      updatePhotoCount();
+      return;
+    }
     const snap = await getDocs(q);
     allPhotos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     lastDoc = snap.docs[snap.docs.length - 1];
