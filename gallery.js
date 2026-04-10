@@ -8,7 +8,8 @@ import {
   serverTimestamp, getDoc, updateDoc, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import { db } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ── CLOUDINARY CONFIG ──
 const CLOUDINARY_CLOUD = "dxipshp0n";
@@ -24,19 +25,12 @@ let selectedFile   = null;
 const PAGE_SIZE    = 12;
 
 // ── INIT ──
-let galleryInitialized = false;
-window.addEventListener("authStateChanged", () => {
-  galleryInitialized = true;
+// Esperar a que Firebase confirme el estado de auth antes de cargar
+onAuthStateChanged(auth, (user) => {
+  window.__currentUser = user;
   loadGallery();
   loadBgCarousel();
 });
-// Cargar si el evento auth no llega en 1.5s (usuario no autenticado)
-setTimeout(() => {
-  if (!galleryInitialized) {
-    loadGallery();
-    loadBgCarousel();
-  }
-}, 1500);
 
 // ── CARGA FOTOS (solo del usuario logueado) ──
 async function loadGallery() {
