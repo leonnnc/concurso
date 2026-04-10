@@ -45,10 +45,10 @@ function updateNavForAuth(user) {
   const alias   = profile?.alias || user.email.split("@")[0];
   if (actions) {
     actions.innerHTML = `
-      <span class="nav-user">
+      <a href="profile.html" class="nav-user">
         <span class="nav-avatar">${alias[0].toUpperCase()}</span>
         <span class="nav-alias">@${alias}</span>
-      </span>
+      </a>
       <a href="gallery.html" class="btn-primary">Mi galería</a>
       <button class="btn-ghost" onclick="handleLogout()">Salir</button>
     `;
