@@ -89,7 +89,7 @@ async function updateQuotaDisplay(uid) {
     if (quotaEl) {
       quotaEl.textContent = remaining > 0
         ? `Puedes subir ${remaining} foto${remaining !== 1 ? "s" : ""} más`
-        : "Alcanzaste el límite de 3 fotos";
+        : "Alcanzaste el límite de 15 fotos";
     }
   } catch (e) {
     console.warn("Quota check error:", e);

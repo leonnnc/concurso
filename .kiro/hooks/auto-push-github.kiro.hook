@@ -1,0 +1,21 @@
+{
+  "enabled": true,
+  "name": "Auto Push a GitHub",
+  "description": "Hace commit y push automático a GitHub cada vez que se guarda un archivo del proyecto",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "*.html",
+      "*.css",
+      "*.js",
+      "*.md",
+      "*.rules"
+    ]
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "git -C \"D:\\Documents\\web\\concurso\" add . && git -C \"D:\\Documents\\web\\concurso\" commit -m \"auto: actualización de archivos\" && git -C \"D:\\Documents\\web\\concurso\" push",
+    "timeout": 30
+  }
+}
