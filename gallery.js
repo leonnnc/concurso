@@ -335,10 +335,15 @@ window.handleUpload = async function() {
         storagePath: fileName,
         createdAt: serverTimestamp()
       });
-      // Actualizar contador en perfil de usuario
       await updateDoc(doc(db, "users", user.uid), { photoCount: increment(1) }).catch(() => {});
       pText.textContent = "¡Foto publicada!";
-      showToast("¡Foto publicada con éxito!", "success");
+      // Avisar si se acerca al límite
+      const newCount = allPhotos.length + 1;
+      if (newCount >= 13) {
+        showToast(`¡Foto publicada! Te quedan ${15 - newCount} foto${15 - newCount !== 1 ? "s" : ""} disponibles.`, "success");
+      } else {
+        showToast("¡Foto publicada con éxito!", "success");
+      }
       setTimeout(() => {
         hideUploadPanel();
         loadGallery();
