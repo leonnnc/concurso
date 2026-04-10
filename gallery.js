@@ -8,11 +8,11 @@ import {
   serverTimestamp, getDoc, updateDoc, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-  ref, uploadBytesResumable, getDownloadURL, deleteObject
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+import { db } from "./firebase-config.js";
 
-import { db, storage } from "./firebase-config.js";
+// ── CLOUDINARY CONFIG ──
+const CLOUDINARY_CLOUD = "dxipshp0n";
+const CLOUDINARY_PRESET = "photocdf_upload";
 
 // ── ESTADO ──
 let allPhotos      = [];
@@ -299,9 +299,9 @@ function processFile(file) {
   reader.readAsDataURL(file);
 }
 
-// ── SUBIDA A FIREBASE STORAGE ──
+// ── SUBIDA A CLOUDINARY ──
 window.handleUpload = async function() {
-  const user  = window.__currentUser;
+  const user    = window.__currentUser;
   const profile = window.__userProfile;
   if (!user || !selectedFile) return;
 
@@ -324,49 +324,74 @@ window.handleUpload = async function() {
   progress.classList.remove("hidden");
   btn.disabled = true;
 
-  const ext      = selectedFile.name.split(".").pop();
-  const fileName = `photos/${user.uid}/${Date.now()}.${ext}`;
-  const storageRef = ref(storage, fileName);
-  const task = uploadBytesResumable(storageRef, selectedFile);
+  try {
+    // Subir a Cloudinary via XMLHttpRequest para mostrar progreso
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("upload_preset", CLOUDINARY_PRESET);
+    formData.append("folder", `photocdf/${user.uid}`);
 
-  task.on("state_changed",
-    (snap) => {
-      const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
-      fill.style.width = pct + "%";
-      pText.textContent = `Subiendo... ${pct}%`;
-    },
-    (err) => {
-      showUploadError("Error al subir la imagen. Intenta de nuevo.");
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`);
+
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        const pct = Math.round((e.loaded / e.total) * 100);
+        fill.style.width = pct + "%";
+        pText.textContent = `Subiendo... ${pct}%`;
+      }
+    };
+
+    xhr.onload = async () => {
+      if (xhr.status === 200) {
+        const result = JSON.parse(xhr.responseText);
+        const url         = result.secure_url;
+        const storagePath = result.public_id;
+
+        await addDoc(collection(db, "photos"), {
+          uid: user.uid,
+          alias,
+          title,
+          description: desc,
+          url,
+          storagePath,
+          createdAt: serverTimestamp()
+        });
+
+        await updateDoc(doc(db, "users", user.uid), { photoCount: increment(1) }).catch(() => {});
+        pText.textContent = "¡Foto publicada!";
+
+        const newCount = allPhotos.length + 1;
+        if (newCount >= 13) {
+          showToast(`¡Foto publicada! Te quedan ${15 - newCount} foto${15 - newCount !== 1 ? "s" : ""} disponibles.`, "success");
+        } else {
+          showToast("¡Foto publicada con éxito!", "success");
+        }
+        setTimeout(() => {
+          hideUploadPanel();
+          loadGallery();
+          loadBgCarousel();
+        }, 800);
+      } else {
+        showUploadError("Error al subir la imagen. Intenta de nuevo.");
+        progress.classList.add("hidden");
+        btn.disabled = false;
+      }
+    };
+
+    xhr.onerror = () => {
+      showUploadError("Error de conexión. Intenta de nuevo.");
       progress.classList.add("hidden");
       btn.disabled = false;
-    },
-    async () => {
-      const url = await getDownloadURL(task.snapshot.ref);
-      await addDoc(collection(db, "photos"), {
-        uid: user.uid,
-        alias,
-        title,
-        description: desc,
-        url,
-        storagePath: fileName,
-        createdAt: serverTimestamp()
-      });
-      await updateDoc(doc(db, "users", user.uid), { photoCount: increment(1) }).catch(() => {});
-      pText.textContent = "¡Foto publicada!";
-      // Avisar si se acerca al límite
-      const newCount = allPhotos.length + 1;
-      if (newCount >= 13) {
-        showToast(`¡Foto publicada! Te quedan ${15 - newCount} foto${15 - newCount !== 1 ? "s" : ""} disponibles.`, "success");
-      } else {
-        showToast("¡Foto publicada con éxito!", "success");
-      }
-      setTimeout(() => {
-        hideUploadPanel();
-        loadGallery();
-        loadBgCarousel();
-      }, 800);
-    }
-  );
+    };
+
+    xhr.send(formData);
+
+  } catch (err) {
+    showUploadError("Error al subir la imagen. Intenta de nuevo.");
+    progress.classList.add("hidden");
+    btn.disabled = false;
+  }
 };
 
 // ── ELIMINAR FOTO ──
@@ -379,9 +404,8 @@ window.deletePhoto = async function(e, btn) {
   if (!confirm("¿Eliminar esta fotografía del concurso?")) return;
   try {
     await deleteDoc(doc(db, "photos", photoId));
-    if (storagePath) {
-      await deleteObject(ref(storage, storagePath)).catch(() => {});
-    }
+    // Cloudinary no permite eliminar desde el frontend sin firma
+    // La imagen se limpia manualmente desde el dashboard de Cloudinary
     await updateDoc(doc(db, "users", window.__currentUser.uid), {
       photoCount: increment(-1)
     }).catch(() => {});
