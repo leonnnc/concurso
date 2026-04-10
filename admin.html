@@ -9,56 +9,86 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     .admin-page { min-height: 100vh; padding: calc(var(--nav-h) + 40px) 24px 80px; }
-    .admin-header { margin-bottom: 40px; }
+    .admin-header { margin-bottom: 32px; }
     .admin-header h1 { font-family: var(--font-display); font-size: 3rem; }
     .admin-header p { color: var(--text-3); font-family: var(--font-mono); font-size: 13px; }
     .admin-login { max-width: 400px; margin: 100px auto; }
+
+    /* Stats */
+    .stats-row { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+    .stat-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 28px; min-width: 130px; }
+    .stat-box .num { font-family: var(--font-display); font-size: 2.5rem; color: var(--gold); }
+    .stat-box .lbl { font-size: 11px; color: var(--text-3); font-family: var(--font-mono); }
+
+    /* Tabla usuarios */
     .users-table { width: 100%; border-collapse: collapse; }
-    .users-table th {
-      text-align: left; font-size: 12px; color: var(--text-3);
-      font-family: var(--font-mono); letter-spacing: 1px;
-      padding: 12px 16px; border-bottom: 1px solid var(--border-2);
-    }
-    .users-table td {
-      padding: 14px 16px; border-bottom: 1px solid var(--border);
-      font-size: 14px; vertical-align: middle;
-    }
+    .users-table th { text-align: left; font-size: 12px; color: var(--text-3); font-family: var(--font-mono); letter-spacing: 1px; padding: 12px 16px; border-bottom: 1px solid var(--border-2); }
+    .users-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 14px; vertical-align: middle; }
     .users-table tr:hover td { background: var(--surface); }
-    .status-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 11px; font-family: var(--font-mono);
-      font-weight: 700; letter-spacing: 1px;
-      padding: 4px 10px; border-radius: 4px;
-    }
-    .status-pending  { background: rgba(232,184,75,0.15); color: var(--gold); }
-    .status-approved { background: rgba(50,200,100,0.15); color: #4ade80; }
-    .status-rejected { background: rgba(255,92,58,0.15);  color: var(--accent-2); }
-    .action-btns { display: flex; gap: 8px; }
-    .btn-approve {
-      background: rgba(50,200,100,0.15); color: #4ade80;
-      border: 1px solid rgba(50,200,100,0.3);
+
+    /* Botones acción */
+    .btn-view-gallery {
+      background: rgba(232,184,75,0.1); color: var(--gold);
+      border: 1px solid rgba(232,184,75,0.3);
       font-size: 12px; padding: 6px 14px; border-radius: 6px;
       font-family: var(--font-mono); font-weight: 700;
-      transition: background .2s;
+      transition: background .2s; cursor: pointer;
     }
-    .btn-approve:hover { background: rgba(50,200,100,0.3); }
-    .btn-reject {
+    .btn-view-gallery:hover { background: rgba(232,184,75,0.25); }
+    .btn-delete-user {
       background: rgba(255,92,58,0.1); color: var(--accent-2);
       border: 1px solid rgba(255,92,58,0.3);
       font-size: 12px; padding: 6px 14px; border-radius: 6px;
       font-family: var(--font-mono); font-weight: 700;
-      transition: background .2s;
+      transition: background .2s; cursor: pointer;
     }
-    .btn-reject:hover { background: rgba(255,92,58,0.25); }
+    .btn-delete-user:hover { background: rgba(255,92,58,0.25); }
+    .action-btns { display: flex; gap: 8px; }
     .filter-bar { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-    .stats-row { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
-    .stat-box {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 20px 28px;
-      min-width: 140px;
+
+    /* Modal galería usuario */
+    .user-gallery-modal {
+      position: fixed; inset: 0; z-index: 3000;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(8px);
+      display: none; align-items: flex-start; justify-content: center;
+      padding: 24px; overflow-y: auto;
     }
-    .stat-box .num { font-family: var(--font-display); font-size: 2.5rem; color: var(--gold); }
-    .stat-box .lbl { font-size: 12px; color: var(--text-3); font-family: var(--font-mono); }
+    .user-gallery-modal.active { display: flex; }
+    .user-gallery-inner {
+      background: var(--surface);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      width: 100%; max-width: 1000px;
+      margin: auto;
+    }
+    .user-gallery-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px;
+    }
+    .user-gallery-header h3 { font-family: var(--font-display); font-size: 1.8rem; }
+    .user-gallery-grid { columns: 3 200px; column-gap: 12px; }
+    .user-gallery-photo {
+      break-inside: avoid; margin-bottom: 12px;
+      border-radius: var(--radius); overflow: hidden;
+      position: relative; background: var(--surface-2);
+    }
+    .user-gallery-photo img { width: 100%; display: block; }
+    .user-gallery-photo-info {
+      padding: 8px 10px;
+      font-size: 12px; color: var(--text-2);
+    }
+    .user-gallery-photo-delete {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(255,92,58,0.9); color: white;
+      border: none; border-radius: 6px;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 13px;
+    }
+    .user-gallery-empty { text-align: center; padding: 60px; color: var(--text-3); }
+
     #adminContent { display: none; }
     #adminLoginSection { display: block; }
   </style>
@@ -68,23 +98,23 @@
   <nav class="navbar scrolled" id="navbar">
     <div class="nav-brand">
       <span class="brand-icon">◈</span>
-      <span class="brand-name">PhotoCDF</span>
+      <span class="brand-name">PhotoCDF Admin</span>
     </div>
     <div class="nav-actions">
-      <a href="index.html" class="btn-ghost btn-sm">← Volver al sitio</a>
+      <a href="index.html" class="btn-ghost btn-sm">← Sitio</a>
       <button class="btn-ghost btn-sm" id="logoutAdminBtn" style="display:none" onclick="logoutAdmin()">Salir</button>
     </div>
   </nav>
 
   <div class="admin-page container">
 
-    <!-- LOGIN ADMIN -->
+    <!-- LOGIN -->
     <div id="adminLoginSection" class="admin-login">
       <div class="admin-header">
         <h1>Panel <span style="color:var(--gold)">Admin</span></h1>
         <p>Acceso restringido</p>
       </div>
-      <div class="modal-form" style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:16px;">
         <div class="form-group">
           <label>Correo admin</label>
           <input type="email" id="adminEmail" placeholder="admin@correo.com" />
@@ -98,25 +128,22 @@
       </div>
     </div>
 
-    <!-- PANEL ADMIN -->
+    <!-- PANEL -->
     <div id="adminContent">
       <div class="admin-header">
         <h1>Panel <span style="color:var(--gold)">Admin</span></h1>
         <p id="adminEmailLabel"></p>
       </div>
 
-      <div class="stats-row" id="statsRow">
-        <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">Total usuarios</div></div>
-        <div class="stat-box"><div class="num" id="statPending">0</div><div class="lbl">Pendientes</div></div>
-        <div class="stat-box"><div class="num" id="statApproved">0</div><div class="lbl">Aprobados</div></div>
-        <div class="stat-box"><div class="num" id="statRejected">0</div><div class="lbl">Rechazados</div></div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">Usuarios</div></div>
+        <div class="stat-box"><div class="num" id="statPhotos">0</div><div class="lbl">Fotos totales</div></div>
       </div>
 
       <div class="filter-bar">
         <button class="filter-tab active" onclick="filterUsers('all', this)">Todos</button>
-        <button class="filter-tab" onclick="filterUsers('pending', this)">Pendientes</button>
-        <button class="filter-tab" onclick="filterUsers('approved', this)">Aprobados</button>
-        <button class="filter-tab" onclick="filterUsers('rejected', this)">Rechazados</button>
+        <button class="filter-tab" onclick="filterUsers('withPhotos', this)">Con fotos</button>
+        <button class="filter-tab" onclick="filterUsers('noPhotos', this)">Sin fotos</button>
       </div>
 
       <table class="users-table">
@@ -126,44 +153,56 @@
             <th>Correo</th>
             <th>Teléfono</th>
             <th>Registro</th>
-            <th>Estado</th>
+            <th>Fotos</th>
             <th>Acciones</th>
           </tr>
         </thead>
         <tbody id="usersTableBody"></tbody>
       </table>
     </div>
+  </div>
 
+  <!-- MODAL GALERÍA USUARIO -->
+  <div class="user-gallery-modal" id="userGalleryModal">
+    <div class="user-gallery-inner">
+      <div class="user-gallery-header">
+        <div>
+          <h3 id="modalUserAlias">@usuario</h3>
+          <p style="font-size:13px;color:var(--text-3);font-family:var(--font-mono)" id="modalUserEmail"></p>
+        </div>
+        <button class="btn-ghost" onclick="closeUserGallery()">✕ Cerrar</button>
+      </div>
+      <div class="user-gallery-grid" id="userGalleryGrid"></div>
+      <div class="user-gallery-empty hidden" id="userGalleryEmpty">
+        <p style="font-size:48px">📷</p>
+        <p>Este usuario no ha subido fotos aún.</p>
+      </div>
+    </div>
   </div>
 
   <div class="toast-container" id="toastContainer"></div>
 
   <script type="module">
     import { auth, db } from "./firebase-config.js";
-    import {
-      signInWithEmailAndPassword, signOut, onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import {
-      collection, getDocs, doc, updateDoc, query, orderBy
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { collection, getDocs, doc, deleteDoc, query, orderBy, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // UID del admin — reemplaza con el UID de tu cuenta admin en Firebase
     const ADMIN_UID = "REEMPLAZA_CON_TU_UID_ADMIN";
 
-    let allUsers = [];
+    let allUsers   = [];
+    let allPhotos  = [];
     let currentFilter = "all";
 
     onAuthStateChanged(auth, async (user) => {
       if (user && user.uid === ADMIN_UID) {
         document.getElementById("adminLoginSection").style.display = "none";
-        document.getElementById("adminContent").style.display = "block";
-        document.getElementById("logoutAdminBtn").style.display = "inline-flex";
-        document.getElementById("adminEmailLabel").textContent = user.email;
-        await loadUsers();
+        document.getElementById("adminContent").style.display     = "block";
+        document.getElementById("logoutAdminBtn").style.display   = "inline-flex";
+        document.getElementById("adminEmailLabel").textContent    = user.email;
+        await loadData();
       } else if (user) {
-        // Usuario logueado pero no es admin
         await signOut(auth);
-        showAdminError("No tienes permisos de administrador.");
+        showErr("No tienes permisos de administrador.");
       }
     });
 
@@ -174,7 +213,7 @@
       errEl.classList.add("hidden");
       try {
         await signInWithEmailAndPassword(auth, email, pass);
-      } catch (e) {
+      } catch(e) {
         errEl.textContent = "Correo o contraseña incorrectos.";
         errEl.classList.remove("hidden");
       }
@@ -183,22 +222,20 @@
     window.logoutAdmin = async function() {
       await signOut(auth);
       document.getElementById("adminLoginSection").style.display = "block";
-      document.getElementById("adminContent").style.display = "none";
-      document.getElementById("logoutAdminBtn").style.display = "none";
+      document.getElementById("adminContent").style.display      = "none";
+      document.getElementById("logoutAdminBtn").style.display    = "none";
     };
 
-    async function loadUsers() {
-      const snap = await getDocs(query(collection(db, "users"), orderBy("createdAt", "desc")));
-      allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      updateStats();
+    async function loadData() {
+      const [usersSnap, photosSnap] = await Promise.all([
+        getDocs(query(collection(db, "users"), orderBy("createdAt", "desc"))),
+        getDocs(collection(db, "photos"))
+      ]);
+      allUsers  = usersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      allPhotos = photosSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      document.getElementById("statTotal").textContent  = allUsers.length;
+      document.getElementById("statPhotos").textContent = allPhotos.length;
       renderUsers();
-    }
-
-    function updateStats() {
-      document.getElementById("statTotal").textContent    = allUsers.length;
-      document.getElementById("statPending").textContent  = allUsers.filter(u => u.status === "pending").length;
-      document.getElementById("statApproved").textContent = allUsers.filter(u => u.status === "approved").length;
-      document.getElementById("statRejected").textContent = allUsers.filter(u => u.status === "rejected").length;
     }
 
     window.filterUsers = function(filter, btn) {
@@ -209,56 +246,98 @@
     };
 
     function renderUsers() {
-      const filtered = currentFilter === "all"
-        ? allUsers
-        : allUsers.filter(u => u.status === currentFilter);
+      let list = allUsers;
+      if (currentFilter === "withPhotos") list = allUsers.filter(u => allPhotos.some(p => p.uid === u.id));
+      if (currentFilter === "noPhotos")   list = allUsers.filter(u => !allPhotos.some(p => p.uid === u.id));
 
       const tbody = document.getElementById("usersTableBody");
-      if (!filtered.length) {
+      if (!list.length) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:40px">Sin usuarios</td></tr>`;
         return;
       }
-      tbody.innerHTML = filtered.map(u => {
-        const date = u.createdAt?.toDate
-          ? u.createdAt.toDate().toLocaleDateString("es-PE", { day: "numeric", month: "short", year: "numeric" })
-          : "—";
-        const status = u.status || "pending";
-        const statusLabel = { pending: "PENDIENTE", approved: "APROBADO", rejected: "RECHAZADO" }[status];
+      tbody.innerHTML = list.map(u => {
+        const date      = u.createdAt?.toDate ? u.createdAt.toDate().toLocaleDateString("es-PE", { day:"numeric", month:"short", year:"numeric" }) : "—";
+        const photoCount = allPhotos.filter(p => p.uid === u.id).length;
         return `
           <tr>
-            <td><strong>@${escHtml(u.alias || "—")}</strong></td>
-            <td style="color:var(--text-2)">${escHtml(u.email || "—")}</td>
-            <td style="color:var(--text-3);font-family:var(--font-mono);font-size:12px">${escHtml(u.phone || "—")}</td>
+            <td><strong>@${esc(u.alias||"—")}</strong></td>
+            <td style="color:var(--text-2)">${esc(u.email||"—")}</td>
+            <td style="color:var(--text-3);font-family:var(--font-mono);font-size:12px">${esc(u.phone||"—")}</td>
             <td style="color:var(--text-3);font-family:var(--font-mono);font-size:12px">${date}</td>
-            <td><span class="status-badge status-${status}">${statusLabel}</span></td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:13px;color:${photoCount>0?'var(--gold)':'var(--text-3)'}">
+                ${photoCount} / 10
+              </span>
+            </td>
             <td>
               <div class="action-btns">
-                ${status !== "approved" ? `<button class="btn-approve" onclick="updateStatus('${u.id}', 'approved')">Aprobar</button>` : ""}
-                ${status !== "rejected" ? `<button class="btn-reject"  onclick="updateStatus('${u.id}', 'rejected')">Rechazar</button>` : ""}
+                <button class="btn-view-gallery" onclick="openUserGallery('${u.id}','${esc(u.alias||u.email)}','${esc(u.email||"")}')">
+                  Ver fotos
+                </button>
               </div>
             </td>
-          </tr>
-        `;
+          </tr>`;
       }).join("");
     }
 
-    window.updateStatus = async function(uid, status) {
+    window.openUserGallery = function(uid, alias, email) {
+      const modal = document.getElementById("userGalleryModal");
+      const grid  = document.getElementById("userGalleryGrid");
+      const empty = document.getElementById("userGalleryEmpty");
+      document.getElementById("modalUserAlias").textContent = "@" + alias;
+      document.getElementById("modalUserEmail").textContent = email;
+
+      const photos = allPhotos.filter(p => p.uid === uid);
+      grid.innerHTML = "";
+      empty.classList.add("hidden");
+
+      if (!photos.length) {
+        empty.classList.remove("hidden");
+      } else {
+        grid.innerHTML = photos.map(p => {
+          const date = p.createdAt?.toDate ? p.createdAt.toDate().toLocaleDateString("es-PE",{day:"numeric",month:"short",year:"numeric"}) : "—";
+          return `
+            <div class="user-gallery-photo">
+              <img src="${esc(p.url)}" alt="${esc(p.title||'Foto')}" loading="lazy" />
+              <button class="user-gallery-photo-delete" onclick="adminDeletePhoto('${p.id}','${esc(p.storagePath||'')}','${uid}')" title="Eliminar foto">✕</button>
+              <div class="user-gallery-photo-info">
+                <strong>${esc(p.title||"Sin título")}</strong><br/>
+                <span style="color:var(--text-3)">${date}</span>
+              </div>
+            </div>`;
+        }).join("");
+      }
+      modal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    };
+
+    window.closeUserGallery = function() {
+      document.getElementById("userGalleryModal").classList.remove("active");
+      document.body.style.overflow = "";
+    };
+
+    window.adminDeletePhoto = async function(photoId, storagePath, uid) {
+      if (!confirm("¿Eliminar esta foto del concurso?")) return;
       try {
-        await updateDoc(doc(db, "users", uid), { status });
-        const u = allUsers.find(u => u.id === uid);
-        if (u) u.status = status;
-        updateStats();
+        await deleteDoc(doc(db, "photos", photoId));
+        allPhotos = allPhotos.filter(p => p.id !== photoId);
+        document.getElementById("statPhotos").textContent = allPhotos.length;
+        // Refrescar modal
+        const modal = document.getElementById("userGalleryModal");
+        const alias = document.getElementById("modalUserAlias").textContent.replace("@","");
+        const email = document.getElementById("modalUserEmail").textContent;
+        openUserGallery(uid, alias, email);
         renderUsers();
-        showToast(status === "approved" ? "Usuario aprobado." : "Usuario rechazado.", "success");
-      } catch (e) {
-        showToast("Error al actualizar.", "error");
+        showToast("Foto eliminada.", "success");
+      } catch(e) {
+        showToast("Error al eliminar.", "error");
       }
     };
 
-    function escHtml(s) {
+    function esc(s) {
       return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
     }
-    function showAdminError(msg) {
+    function showErr(msg) {
       const el = document.getElementById("adminLoginError");
       el.textContent = msg;
       el.classList.remove("hidden");

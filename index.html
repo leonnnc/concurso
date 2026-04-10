@@ -200,6 +200,29 @@
     </div>
   </section>
 
+  <!-- ══════════ GALERÍA PÚBLICA ══════════ -->
+  <section class="bases" id="galeria" style="background:var(--bg-2);">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">Participantes 2025</p>
+        <h2 class="section-title">Fotos del Concurso</h2>
+      </div>
+      <div class="gallery-grid" id="publicGalleryGrid" style="columns:4 220px;column-gap:16px;">
+        <div class="photo-skeleton"></div>
+        <div class="photo-skeleton"></div>
+        <div class="photo-skeleton"></div>
+        <div class="photo-skeleton"></div>
+      </div>
+      <div id="publicGalleryEmpty" class="hidden" style="text-align:center;padding:60px 24px;color:var(--text-3);">
+        <p style="font-size:48px;margin-bottom:16px;">📷</p>
+        <p>Aún no hay fotos publicadas. ¡Sé el primero!</p>
+      </div>
+      <div style="text-align:center;margin-top:40px;">
+        <button class="btn-primary btn-lg" onclick="showModal('registerModal')">Participar y subir mis fotos</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ══════════ FOOTER ══════════ -->
   <footer class="footer">
     <div class="container footer-inner">
@@ -300,6 +323,34 @@
   <script type="module" src="firebase-config.js"></script>
   <script type="module" src="auth.js"></script>
   <script type="module" src="carousel.js"></script>
+  <script type="module">
+    import { db } from "./firebase-config.js";
+    import { collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    async function loadPublicGallery() {
+      try {
+        const q = query(collection(db, "photos"), orderBy("createdAt", "desc"), limit(12));
+        const snap = await getDocs(q);
+        const grid  = document.getElementById("publicGalleryGrid");
+        const empty = document.getElementById("publicGalleryEmpty");
+        grid.querySelectorAll(".photo-skeleton").forEach(s => s.remove());
+        if (!snap.docs.length) { empty.classList.remove("hidden"); return; }
+        grid.innerHTML = snap.docs.map(d => {
+          const p = d.data();
+          const alias = p.alias || "anónimo";
+          return `
+            <div class="photo-card" style="break-inside:avoid;margin-bottom:16px;">
+              <img src="${p.url}" alt="${p.title || 'Foto'}" loading="lazy" style="width:100%;display:block;border-radius:12px;" />
+              <div style="padding:10px 4px;">
+                <p style="font-size:13px;font-weight:600;margin-bottom:2px;">${p.title || 'Sin título'}</p>
+                <p style="font-size:12px;color:var(--text-3);">@${alias}</p>
+              </div>
+            </div>`;
+        }).join("");
+      } catch(e) { console.warn("Public gallery error:", e); }
+    }
+    loadPublicGallery();
+  </script>
   <script src="ui.js"></script>
 </body>
 </html>
