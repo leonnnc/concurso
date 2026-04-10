@@ -375,3 +375,16 @@
   .lightbox-prev { left: 8px; }
   .lightbox-next { right: 8px; }
 }
+
+/* ── SCAN EFFECT ── */
+@keyframes scanLine2 {
+  0%   { top: 0%; opacity: 1; }
+  100% { top: 100%; opacity: 0.3; }
+}
+@keyframes fadeInData {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.scan-data-line {
+  animation: fadeInData .3s ease both;
+}

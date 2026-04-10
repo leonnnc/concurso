@@ -103,13 +103,23 @@
 
       <!-- PREVIEW (se muestra cuando hay imagen seleccionada) -->
       <div class="upload-preview hidden" id="uploadPreview">
-        <div style="position:relative;">
-          <img id="previewImg" src="" alt="Preview" style="width:100%;max-height:220px;object-fit:cover;border-radius:10px;display:block;" />
-          <button onclick="resetUploadPreview()" style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);color:white;border:none;border-radius:6px;width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
-          <div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:12px;border-radius:0 0 10px 10px;">
+
+        <!-- EFECTO SCAN -->
+        <div id="scanEffect" style="position:relative;border-radius:10px;overflow:hidden;background:#000;">
+          <img id="previewImg" src="" alt="Preview" style="width:100%;max-height:220px;object-fit:cover;display:block;opacity:0;transition:opacity .5s;" />
+          <!-- Overlay de scan -->
+          <div id="scanOverlay" style="position:absolute;inset:0;background:rgba(0,0,0,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:10px;">
+            <div style="width:100%;height:2px;background:var(--gold);position:absolute;top:0;animation:scanLine2 1.5s ease-in-out 2;box-shadow:0 0 12px var(--gold);"></div>
+            <p style="font-family:var(--font-mono);font-size:11px;color:var(--gold);letter-spacing:2px;" id="scanStatus">ANALIZANDO IMAGEN...</p>
+            <div id="scanData" style="font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,0.6);text-align:center;line-height:1.8;"></div>
+          </div>
+          <!-- Botón cambiar foto -->
+          <button id="changePhotoBtn" onclick="resetUploadPreview()" style="display:none;position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.7);color:white;border:none;border-radius:6px;width:28px;height:28px;font-size:14px;cursor:pointer;align-items:center;justify-content:center;">✕</button>
+          <div id="previewInfoOverlay" style="display:none;position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);padding:12px;border-radius:0 0 10px 10px;">
             <p id="previewInfo" style="font-size:11px;color:rgba(255,255,255,0.8);font-family:var(--font-mono);"></p>
           </div>
         </div>
+
       </div>
 
       <div class="form-group">

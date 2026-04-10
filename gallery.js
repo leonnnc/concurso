@@ -271,17 +271,62 @@ function processFile(file) {
   reader.onload = (e) => {
     const img = new Image();
     img.onload = () => {
-      // Resolución mínima 800x600
       if (img.width < 800 || img.height < 600) {
         showUploadError(`Resolución insuficiente: ${img.width}×${img.height}px. Mínimo 800×600px.`);
         selectedFile = null;
         return;
       }
-      document.getElementById("previewImg").src = e.target.result;
-      document.getElementById("previewInfo").textContent =
-        `${img.width}×${img.height}px · ${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type}`;
+      // Mostrar preview con efecto scan
+      const previewImg = document.getElementById("previewImg");
+      previewImg.src = e.target.result;
       document.getElementById("uploadPreview").classList.remove("hidden");
       document.getElementById("dropZone").classList.add("hidden");
+
+      // Datos para mostrar en el scan
+      const scanLines = [
+        `ARCHIVO: ${file.name}`,
+        `FORMATO: ${file.type.split("/")[1].toUpperCase()}`,
+        `RESOLUCIÓN: ${img.width}×${img.height}px`,
+        `TAMAÑO: ${(file.size / 1024 / 1024).toFixed(2)} MB`,
+        `ESTADO: ✓ ACEPTADA`
+      ];
+
+      const scanData = document.getElementById("scanData");
+      const scanStatus = document.getElementById("scanStatus");
+      scanData.innerHTML = "";
+
+      // Mostrar líneas una a una
+      scanLines.forEach((line, i) => {
+        setTimeout(() => {
+          const p = document.createElement("p");
+          p.className = "scan-data-line";
+          p.style.animationDelay = "0s";
+          p.textContent = line;
+          if (line.includes("✓")) p.style.color = "#4ade80";
+          scanData.appendChild(p);
+        }, i * 300);
+      });
+
+      // Después del scan revelar la foto
+      setTimeout(() => {
+        scanStatus.textContent = "✓ IMAGEN VERIFICADA";
+        scanStatus.style.color = "#4ade80";
+      }, scanLines.length * 300);
+
+      setTimeout(() => {
+        const overlay = document.getElementById("scanOverlay");
+        overlay.style.transition = "opacity .6s";
+        overlay.style.opacity = "0";
+        previewImg.style.opacity = "1";
+        setTimeout(() => {
+          overlay.style.display = "none";
+          document.getElementById("changePhotoBtn").style.display = "flex";
+          document.getElementById("previewInfoOverlay").style.display = "block";
+        }, 600);
+      }, scanLines.length * 300 + 800);
+
+      document.getElementById("previewInfo").textContent =
+        `${img.width}×${img.height}px · ${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type}`;
       document.getElementById("uploadBtn").disabled = false;
     };
     img.onerror = () => {
@@ -289,6 +334,10 @@ function processFile(file) {
         `${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type}`;
       document.getElementById("uploadPreview").classList.remove("hidden");
       document.getElementById("dropZone").classList.add("hidden");
+      document.getElementById("scanOverlay").style.display = "none";
+      document.getElementById("changePhotoBtn").style.display = "flex";
+      document.getElementById("previewInfoOverlay").style.display = "block";
+      document.getElementById("previewImg").style.opacity = "1";
       document.getElementById("uploadBtn").disabled = false;
     };
     img.src = e.target.result;
@@ -432,7 +481,17 @@ function resetUpload() {
 
 window.resetUploadPreview = function() {
   selectedFile = null;
-  document.getElementById("previewImg").src = "";
+  const previewImg = document.getElementById("previewImg");
+  previewImg.src = "";
+  previewImg.style.opacity = "0";
+  const overlay = document.getElementById("scanOverlay");
+  overlay.style.display = "flex";
+  overlay.style.opacity = "1";
+  document.getElementById("scanData").innerHTML = "";
+  document.getElementById("scanStatus").textContent = "ANALIZANDO IMAGEN...";
+  document.getElementById("scanStatus").style.color = "var(--gold)";
+  document.getElementById("changePhotoBtn").style.display = "none";
+  document.getElementById("previewInfoOverlay").style.display = "none";
   document.getElementById("uploadPreview").classList.add("hidden");
   document.getElementById("dropZone").classList.remove("hidden");
   document.getElementById("uploadBtn").disabled = true;
