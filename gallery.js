@@ -327,7 +327,8 @@ function processFile(file) {
 
       document.getElementById("previewInfo").textContent =
         `${img.width}×${img.height}px · ${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type}`;
-      document.getElementById("uploadBtn").disabled = false;
+      // No activar el botón aún — esperar que llene título y descripción
+      checkUploadReady();
     };
     img.onerror = () => {
       document.getElementById("previewInfo").textContent =
@@ -338,7 +339,7 @@ function processFile(file) {
       document.getElementById("changePhotoBtn").style.display = "flex";
       document.getElementById("previewInfoOverlay").style.display = "block";
       document.getElementById("previewImg").style.opacity = "1";
-      document.getElementById("uploadBtn").disabled = false;
+      checkUploadReady();
     };
     img.src = e.target.result;
   };
@@ -359,8 +360,10 @@ window.handleUpload = async function() {
     return;
   }
 
-  const title = document.getElementById("photoTitle").value.trim() || "Sin título";
+  const title = document.getElementById("photoTitle").value.trim();
   const desc  = document.getElementById("photoDesc").value.trim();
+  if (!title || title.length < 3) { showUploadError("El título es obligatorio (mínimo 3 caracteres)."); return; }
+  if (!desc  || desc.length  < 5) { showUploadError("La descripción es obligatoria (mínimo 5 caracteres)."); return; }
   const alias = profile?.alias || user.email.split("@")[0];
 
   const progress = document.getElementById("uploadProgress");
@@ -502,6 +505,13 @@ function showUploadError(msg) {
   el.textContent = msg;
   el.classList.remove("hidden");
 }
+
+window.checkUploadReady = function() {
+  const title = document.getElementById("photoTitle").value.trim();
+  const desc  = document.getElementById("photoDesc").value.trim();
+  const btn   = document.getElementById("uploadBtn");
+  btn.disabled = !(selectedFile && title.length >= 3 && desc.length >= 5);
+};
 function escHtml(s) {
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }

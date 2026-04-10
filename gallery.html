@@ -123,12 +123,12 @@
       </div>
 
       <div class="form-group">
-        <label>Título de la fotografía</label>
-        <input type="text" id="photoTitle" placeholder="Ej: Atardecer en el CDF" maxlength="80" />
+        <label>Título de la fotografía <span style="color:var(--accent)">*</span></label>
+        <input type="text" id="photoTitle" placeholder="Ej: Atardecer en el CDF" maxlength="80" oninput="checkUploadReady()" />
       </div>
       <div class="form-group">
-        <label>Descripción breve (opcional)</label>
-        <textarea id="photoDesc" placeholder="Cuenta la historia detrás de esta foto..." rows="2" maxlength="300"></textarea>
+        <label>Descripción breve <span style="color:var(--accent)">*</span></label>
+        <textarea id="photoDesc" placeholder="Cuenta la historia detrás de esta foto..." rows="2" maxlength="300" oninput="checkUploadReady()"></textarea>
       </div>
 
       <!-- PROGRESO -->
