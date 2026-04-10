@@ -266,16 +266,17 @@ window.handleFileSelect = function(e) {
 };
 
 function processFile(file) {
-  const validTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif", "image/tiff", "image/bmp", "image/gif"];
   const errEl = document.getElementById("uploadError");
   errEl.classList.add("hidden");
 
-  if (!validTypes.includes(file.type)) {
-    showUploadError("Solo se aceptan archivos JPG, PNG y WEBP.");
+  // Verificar que sea imagen
+  if (!file.type.startsWith("image/")) {
+    showUploadError("Solo se aceptan archivos de imagen.");
     return;
   }
-  if (file.size > 10 * 1024 * 1024) {
-    showUploadError("El archivo supera el límite de 10 MB.");
+  // Límite de 20MB
+  if (file.size > 20 * 1024 * 1024) {
+    showUploadError("El archivo supera el límite de 20 MB.");
     return;
   }
   selectedFile = file;
@@ -283,14 +284,22 @@ function processFile(file) {
   reader.onload = (e) => {
     const img = new Image();
     img.onload = () => {
-      if (img.width < 1200 || img.height < 800) {
-        showUploadError(`Resolución insuficiente: ${img.width}×${img.height}px. Mínimo 1200×800px.`);
+      // Resolución mínima 800x600
+      if (img.width < 800 || img.height < 600) {
+        showUploadError(`Resolución insuficiente: ${img.width}×${img.height}px. Mínimo 800×600px.`);
         selectedFile = null;
         return;
       }
       document.getElementById("previewImg").src = e.target.result;
       document.getElementById("previewInfo").textContent =
         `${img.width}×${img.height}px · ${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type}`;
+      document.getElementById("uploadPreview").classList.remove("hidden");
+      document.getElementById("uploadBtn").disabled = false;
+    };
+    img.onerror = () => {
+      // Si no se puede leer como imagen (ej: HEIC en algunos navegadores), igual permitir
+      document.getElementById("previewInfo").textContent =
+        `${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type}`;
       document.getElementById("uploadPreview").classList.remove("hidden");
       document.getElementById("uploadBtn").disabled = false;
     };
