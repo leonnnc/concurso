@@ -71,9 +71,12 @@ async function loadGallery() {
 
 window.loadMorePhotos = async function() {
   if (!lastDoc) return;
+  const uid = window.__currentUser?.uid;
+  if (!uid) return;
   try {
     const q = query(
       collection(db, "photos"),
+      where("uid", "==", uid),
       orderBy("createdAt", "desc"),
       startAfter(lastDoc),
       limit(PAGE_SIZE)
