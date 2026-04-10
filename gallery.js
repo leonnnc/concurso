@@ -104,10 +104,7 @@ window.filterGallery = function(filter, btn) {
 };
 
 function applyFilter(filter) {
-  const uid = window.__currentUser?.uid;
-  if (filter === "mine" && uid) {
-    filteredPhotos = allPhotos.filter(p => p.uid === uid);
-  } else if (filter === "recent") {
+  if (filter === "recent") {
     filteredPhotos = [...allPhotos].slice(0, 6);
   } else {
     filteredPhotos = [...allPhotos];
