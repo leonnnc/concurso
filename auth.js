@@ -163,7 +163,28 @@ window.handleLogin = async function(e) {
   }
 };
 
-// ── LOGOUT ──
+// ── RECUPERAR CONTRASEÑA ──
+window.handleForgotPassword = async function() {
+  const email = document.getElementById("loginEmail").value.trim();
+  const errEl = document.getElementById("loginError");
+  if (!email) {
+    errEl.textContent = "Ingresa tu correo primero.";
+    errEl.classList.remove("hidden");
+    return;
+  }
+  try {
+    await sendPasswordResetEmail(auth, email);
+    errEl.style.background = "rgba(50,200,100,0.1)";
+    errEl.style.borderColor = "rgba(50,200,100,0.3)";
+    errEl.style.color = "#4ade80";
+    errEl.textContent = "Te enviamos un correo para restablecer tu contraseña.";
+    errEl.classList.remove("hidden");
+  } catch (e) {
+    errEl.style = "";
+    errEl.textContent = friendlyError(e.code);
+    errEl.classList.remove("hidden");
+  }
+};
 window.handleLogout = async function() {
   await signOut(auth);
   showToast("Sesión cerrada.", "success");
