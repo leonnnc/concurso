@@ -84,7 +84,7 @@ async function updateQuotaDisplay(uid) {
     const q = query(collection(db, "photos"), where("uid", "==", uid));
     const snap = await getDocs(q);
     const count = snap.size;
-    const remaining = 3 - count;
+    const remaining = 15 - count;
     const quotaEl = document.getElementById("userQuota");
     if (quotaEl) {
       quotaEl.textContent = remaining > 0

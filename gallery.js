@@ -276,8 +276,8 @@ window.handleUpload = async function() {
   // Verificar cuota
   const countQ = query(collection(db, "photos"), where("uid", "==", user.uid));
   const countSnap = await getDocs(countQ);
-  if (countSnap.size >= 3) {
-    showUploadError("Alcanzaste el límite de 3 fotografías.");
+  if (countSnap.size >= 15) {
+    showUploadError("Alcanzaste el límite de 15 fotografías.");
     return;
   }
 
