@@ -281,13 +281,14 @@ function processFile(file) {
       document.getElementById("previewInfo").textContent =
         `${img.width}×${img.height}px · ${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type}`;
       document.getElementById("uploadPreview").classList.remove("hidden");
+      document.getElementById("dropZone").classList.add("hidden");
       document.getElementById("uploadBtn").disabled = false;
     };
     img.onerror = () => {
-      // Si no se puede leer como imagen (ej: HEIC en algunos navegadores), igual permitir
       document.getElementById("previewInfo").textContent =
         `${(file.size / 1024 / 1024).toFixed(2)} MB · ${file.type}`;
       document.getElementById("uploadPreview").classList.remove("hidden");
+      document.getElementById("dropZone").classList.add("hidden");
       document.getElementById("uploadBtn").disabled = false;
     };
     img.src = e.target.result;
@@ -419,6 +420,7 @@ function resetUpload() {
   selectedFile = null;
   document.getElementById("previewImg").src = "";
   document.getElementById("uploadPreview").classList.add("hidden");
+  document.getElementById("dropZone").classList.remove("hidden");
   document.getElementById("uploadProgress").classList.add("hidden");
   document.getElementById("progressFill").style.width = "0%";
   document.getElementById("uploadError").classList.add("hidden");
@@ -427,6 +429,15 @@ function resetUpload() {
   document.getElementById("photoDesc").value = "";
   document.getElementById("fileInput").value = "";
 }
+
+window.resetUploadPreview = function() {
+  selectedFile = null;
+  document.getElementById("previewImg").src = "";
+  document.getElementById("uploadPreview").classList.add("hidden");
+  document.getElementById("dropZone").classList.remove("hidden");
+  document.getElementById("uploadBtn").disabled = true;
+  document.getElementById("fileInput").value = "";
+};
 function showUploadError(msg) {
   const el = document.getElementById("uploadError");
   el.textContent = msg;

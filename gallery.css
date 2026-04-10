@@ -89,12 +89,12 @@
   background: var(--surface);
   border: 1px solid var(--border-2);
   border-radius: var(--radius-lg);
-  padding: 36px;
+  padding: 28px;
   width: 100%;
-  max-width: 560px;
-  max-height: 90vh;
+  max-width: 520px;
+  max-height: 95vh;
   overflow-y: auto;
-  display: flex; flex-direction: column; gap: 20px;
+  display: flex; flex-direction: column; gap: 14px;
   animation: slideUp .25s ease;
 }
 .upload-panel-header {
