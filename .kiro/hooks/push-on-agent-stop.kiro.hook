@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Push to GitHub on completion",
+  "description": "Automatically stages all changes, commits, and pushes to GitHub when the agent finishes an implementation",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "git add . && git commit -m \"chore: auto-push after implementation\" && git push"
+  }
+}
