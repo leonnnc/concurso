@@ -266,7 +266,7 @@ window.handleFileSelect = function(e) {
 };
 
 function processFile(file) {
-  const validTypes = ["image/jpeg", "image/png", "image/webp"];
+  const validTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif", "image/tiff", "image/bmp", "image/gif"];
   const errEl = document.getElementById("uploadError");
   errEl.classList.add("hidden");
 
