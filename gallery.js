@@ -223,6 +223,22 @@ window.showUploadPanel = function() {
   if (!window.__currentUser) { showModal("loginModal"); return; }
   document.getElementById("uploadPanel").classList.add("active");
   document.body.style.overflow = "hidden";
+
+  // Mostrar aviso si se acerca al límite
+  const count = allPhotos.length;
+  const remaining = 15 - count;
+  const warningEl = document.getElementById("uploadQuotaWarning");
+  if (warningEl) {
+    if (remaining <= 3 && remaining > 0) {
+      warningEl.textContent = `⚠️ Te quedan ${remaining} foto${remaining !== 1 ? "s" : ""} disponibles de 15.`;
+      warningEl.classList.remove("hidden");
+    } else if (remaining === 0) {
+      warningEl.textContent = "🚫 Alcanzaste el límite de 15 fotografías.";
+      warningEl.classList.remove("hidden");
+    } else {
+      warningEl.classList.add("hidden");
+    }
+  }
 };
 window.hideUploadPanel = function() {
   document.getElementById("uploadPanel").classList.remove("active");
