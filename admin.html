@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — PhotoContest CDF</title>
+  <link rel="stylesheet" href="main.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    .admin-page { min-height: 100vh; padding: calc(var(--nav-h) + 40px) 24px 80px; }
+    .admin-header { margin-bottom: 40px; }
+    .admin-header h1 { font-family: var(--font-display); font-size: 3rem; }
+    .admin-header p { color: var(--text-3); font-family: var(--font-mono); font-size: 13px; }
+    .admin-login { max-width: 400px; margin: 100px auto; }
+    .users-table { width: 100%; border-collapse: collapse; }
+    .users-table th {
+      text-align: left; font-size: 12px; color: var(--text-3);
+      font-family: var(--font-mono); letter-spacing: 1px;
+      padding: 12px 16px; border-bottom: 1px solid var(--border-2);
+    }
+    .users-table td {
+      padding: 14px 16px; border-bottom: 1px solid var(--border);
+      font-size: 14px; vertical-align: middle;
+    }
+    .users-table tr:hover td { background: var(--surface); }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-family: var(--font-mono);
+      font-weight: 700; letter-spacing: 1px;
+      padding: 4px 10px; border-radius: 4px;
+    }
+    .status-pending  { background: rgba(232,184,75,0.15); color: var(--gold); }
+    .status-approved { background: rgba(50,200,100,0.15); color: #4ade80; }
+    .status-rejected { background: rgba(255,92,58,0.15);  color: var(--accent-2); }
+    .action-btns { display: flex; gap: 8px; }
+    .btn-approve {
+      background: rgba(50,200,100,0.15); color: #4ade80;
+      border: 1px solid rgba(50,200,100,0.3);
+      font-size: 12px; padding: 6px 14px; border-radius: 6px;
+      font-family: var(--font-mono); font-weight: 700;
+      transition: background .2s;
+    }
+    .btn-approve:hover { background: rgba(50,200,100,0.3); }
+    .btn-reject {
+      background: rgba(255,92,58,0.1); color: var(--accent-2);
+      border: 1px solid rgba(255,92,58,0.3);
+      font-size: 12px; padding: 6px 14px; border-radius: 6px;
+      font-family: var(--font-mono); font-weight: 700;
+      transition: background .2s;
+    }
+    .btn-reject:hover { background: rgba(255,92,58,0.25); }
+    .filter-bar { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    .stats-row { display: flex; gap: 24px; margin-bottom: 32px; flex-wrap: wrap; }
+    .stat-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px 28px;
+      min-width: 140px;
+    }
+    .stat-box .num { font-family: var(--font-display); font-size: 2.5rem; color: var(--gold); }
+    .stat-box .lbl { font-size: 12px; color: var(--text-3); font-family: var(--font-mono); }
+    #adminContent { display: none; }
+    #adminLoginSection { display: block; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar scrolled" id="navbar">
+    <div class="nav-brand">
+      <span class="brand-icon">◈</span>
+      <span class="brand-name">PhotoCDF</span>
+    </div>
+    <div class="nav-actions">
+      <a href="index.html" class="btn-ghost btn-sm">← Volver al sitio</a>
+      <button class="btn-ghost btn-sm" id="logoutAdminBtn" style="display:none" onclick="logoutAdmin()">Salir</button>
+    </div>
+  </nav>
+
+  <div class="admin-page container">
+
+    <!-- LOGIN ADMIN -->
+    <div id="adminLoginSection" class="admin-login">
+      <div class="admin-header">
+        <h1>Panel <span style="color:var(--gold)">Admin</span></h1>
+        <p>Acceso restringido</p>
+      </div>
+      <div class="modal-form" style="display:flex;flex-direction:column;gap:16px;">
+        <div class="form-group">
+          <label>Correo admin</label>
+          <input type="email" id="adminEmail" placeholder="admin@correo.com" />
+        </div>
+        <div class="form-group">
+          <label>Contraseña</label>
+          <input type="password" id="adminPass" placeholder="••••••••" />
+        </div>
+        <div id="adminLoginError" class="form-error hidden"></div>
+        <button class="btn-primary btn-full" onclick="loginAdmin()">Ingresar</button>
+      </div>
+    </div>
+
+    <!-- PANEL ADMIN -->
+    <div id="adminContent">
+      <div class="admin-header">
+        <h1>Panel <span style="color:var(--gold)">Admin</span></h1>
+        <p id="adminEmailLabel"></p>
+      </div>
+
+      <div class="stats-row" id="statsRow">
+        <div class="stat-box"><div class="num" id="statTotal">0</div><div class="lbl">Total usuarios</div></div>
+        <div class="stat-box"><div class="num" id="statPending">0</div><div class="lbl">Pendientes</div></div>
+        <div class="stat-box"><div class="num" id="statApproved">0</div><div class="lbl">Aprobados</div></div>
+        <div class="stat-box"><div class="num" id="statRejected">0</div><div class="lbl">Rechazados</div></div>
+      </div>
+
+      <div class="filter-bar">
+        <button class="filter-tab active" onclick="filterUsers('all', this)">Todos</button>
+        <button class="filter-tab" onclick="filterUsers('pending', this)">Pendientes</button>
+        <button class="filter-tab" onclick="filterUsers('approved', this)">Aprobados</button>
+        <button class="filter-tab" onclick="filterUsers('rejected', this)">Rechazados</button>
+      </div>
+
+      <table class="users-table">
+        <thead>
+          <tr>
+            <th>Alias</th>
+            <th>Correo</th>
+            <th>Teléfono</th>
+            <th>Registro</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="usersTableBody"></tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script type="module">
+    import { auth, db } from "./firebase-config.js";
+    import {
+      signInWithEmailAndPassword, signOut, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {
+      collection, getDocs, doc, updateDoc, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // UID del admin — reemplaza con el UID de tu cuenta admin en Firebase
+    const ADMIN_UID = "REEMPLAZA_CON_TU_UID_ADMIN";
+
+    let allUsers = [];
+    let currentFilter = "all";
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user && user.uid === ADMIN_UID) {
+        document.getElementById("adminLoginSection").style.display = "none";
+        document.getElementById("adminContent").style.display = "block";
+        document.getElementById("logoutAdminBtn").style.display = "inline-flex";
+        document.getElementById("adminEmailLabel").textContent = user.email;
+        await loadUsers();
+      } else if (user) {
+        // Usuario logueado pero no es admin
+        await signOut(auth);
+        showAdminError("No tienes permisos de administrador.");
+      }
+    });
+
+    window.loginAdmin = async function() {
+      const email = document.getElementById("adminEmail").value.trim();
+      const pass  = document.getElementById("adminPass").value;
+      const errEl = document.getElementById("adminLoginError");
+      errEl.classList.add("hidden");
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (e) {
+        errEl.textContent = "Correo o contraseña incorrectos.";
+        errEl.classList.remove("hidden");
+      }
+    };
+
+    window.logoutAdmin = async function() {
+      await signOut(auth);
+      document.getElementById("adminLoginSection").style.display = "block";
+      document.getElementById("adminContent").style.display = "none";
+      document.getElementById("logoutAdminBtn").style.display = "none";
+    };
+
+    async function loadUsers() {
+      const snap = await getDocs(query(collection(db, "users"), orderBy("createdAt", "desc")));
+      allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      updateStats();
+      renderUsers();
+    }
+
+    function updateStats() {
+      document.getElementById("statTotal").textContent    = allUsers.length;
+      document.getElementById("statPending").textContent  = allUsers.filter(u => u.status === "pending").length;
+      document.getElementById("statApproved").textContent = allUsers.filter(u => u.status === "approved").length;
+      document.getElementById("statRejected").textContent = allUsers.filter(u => u.status === "rejected").length;
+    }
+
+    window.filterUsers = function(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll(".filter-tab").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      renderUsers();
+    };
+
+    function renderUsers() {
+      const filtered = currentFilter === "all"
+        ? allUsers
+        : allUsers.filter(u => u.status === currentFilter);
+
+      const tbody = document.getElementById("usersTableBody");
+      if (!filtered.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--text-3);padding:40px">Sin usuarios</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = filtered.map(u => {
+        const date = u.createdAt?.toDate
+          ? u.createdAt.toDate().toLocaleDateString("es-PE", { day: "numeric", month: "short", year: "numeric" })
+          : "—";
+        const status = u.status || "pending";
+        const statusLabel = { pending: "PENDIENTE", approved: "APROBADO", rejected: "RECHAZADO" }[status];
+        return `
+          <tr>
+            <td><strong>@${escHtml(u.alias || "—")}</strong></td>
+            <td style="color:var(--text-2)">${escHtml(u.email || "—")}</td>
+            <td style="color:var(--text-3);font-family:var(--font-mono);font-size:12px">${escHtml(u.phone || "—")}</td>
+            <td style="color:var(--text-3);font-family:var(--font-mono);font-size:12px">${date}</td>
+            <td><span class="status-badge status-${status}">${statusLabel}</span></td>
+            <td>
+              <div class="action-btns">
+                ${status !== "approved" ? `<button class="btn-approve" onclick="updateStatus('${u.id}', 'approved')">Aprobar</button>` : ""}
+                ${status !== "rejected" ? `<button class="btn-reject"  onclick="updateStatus('${u.id}', 'rejected')">Rechazar</button>` : ""}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    window.updateStatus = async function(uid, status) {
+      try {
+        await updateDoc(doc(db, "users", uid), { status });
+        const u = allUsers.find(u => u.id === uid);
+        if (u) u.status = status;
+        updateStats();
+        renderUsers();
+        showToast(status === "approved" ? "Usuario aprobado." : "Usuario rechazado.", "success");
+      } catch (e) {
+        showToast("Error al actualizar.", "error");
+      }
+    };
+
+    function escHtml(s) {
+      return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    }
+    function showAdminError(msg) {
+      const el = document.getElementById("adminLoginError");
+      el.textContent = msg;
+      el.classList.remove("hidden");
+    }
+  </script>
+  <script src="ui.js"></script>
+</body>
+</html>
