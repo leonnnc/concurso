@@ -134,8 +134,7 @@ window.handleRegister = async function(e) {
       // stay on gallery
     } else {
       setTimeout(() => { window.location.href = "gallery.html"; }, 1200);
-    }
-  } catch (err) {
+    }  } catch (err) {
     showError(errEl, friendlyError(err.code));
   } finally {
     setLoading(btn, false);
